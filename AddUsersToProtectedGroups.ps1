@@ -43,20 +43,19 @@ write-host -ForegroundColor Green $logo
 
 function list-members{
 
-    Write-host "Listing members of Domain admins..."
+    Write-host "Listing members of Domain admins...`n"
 
     start-sleep 1
 
-    Get-ADGroupMember -Identity "Domain Admins"
+    (Get-ADGroupMember -Identity "Domain Admins").name
 
     start-sleep 1
 
-    Write-host "Listing members of Protected Users..."
-    Write-host " "
+    Write-host "`nListing members of Protected Users...`n"
 
     start-sleep 1
 
-    Get-ADGroupMember -Identity "Protected Users"
+    (Get-ADGroupMember -Identity "Protected Users").name
 
     start-sleep 1
 
@@ -69,15 +68,19 @@ function compare-members{
     $PUU = get-content -path C:\PUU.txt
 
     $diff = Compare-Object $DAU $PUU
-    if ($PUU -eq $null -or $diff)
+    if ($null -eq $PUU -or $puu -eq $diff)
         {
-        Write-host "At least some Domain Admins not present in protected users. Adding..."
-        add-ProtectedMembers
+
+            Write-host "At least some Domain Admins not present in protected users. Adding..."
+            add-ProtectedMembers
+
         }
     else
         {
-        write-host "Domain admins already members of Protected Users"
-        cleanUpAndExit
+
+            write-host "Domain admins already members of Protected Users"
+            cleanUpAndExit
+
         }
 }
 
@@ -88,15 +91,17 @@ function compare-membersAgain {
     $PUU = get-content -path C:\PUU.txt
 
     $diff = Compare-Object $DAU $PUU
-    if ($PUU -eq $null -or $diff)
+    if ($null -eq $PUU -or $PUU -eq $diff)
         { 
-        write-warning "Members not added, please run the script again"
-        cleanUpAndExit 
+
+          write-warning "Members not added, please run the script again"
+            cleanUpAndExit 
         }
     else
         { 
-         write-host " "
-        write-host "Members added successfully!"
+
+            write-host "`nMembers added successfully!"
+
         }
 }
 
